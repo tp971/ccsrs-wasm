@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!--
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="stylesheet" media="screen and (min-device-width: 800px)" href="./style/main.css" />
+        <link rel="stylesheet" media="screen and (max-device-width: 799px)" href="./style/main_mobile.css" />
+    -->
+    <link rel="stylesheet" href="./style/main.css" />
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="./wasm/ccsrs_wasm.js"></script>
+    <script type="text/javascript" src="./js/main.js"></script>
+</head>
+
+<body>
+<div class="main">
+    <div class="left">
+        <textarea id="ccs_input"></textarea>
+    </div>
+    <div class="right">
+        <div class="head">
+            <div class="controls">
+                <button id="btn_compile">Compile</button><!--
+                --><button id="btn_reset">Reset</button><!--
+                --><button id="btn_random">Random path</button><!--
+                --><button id="btn_random_stop" class="hidden">Stop random path</button><!--
+                -->
+            </div>
+            <div id="status" class="status"></div>
+            <div style="clear:both"></div>
+        </div>
+        <div id="explore" class="explore hidden">
+            <b>Current process:</b>
+            <div id="explore_current" class="current"></div>
+
+            <div id="explore_transitions">
+                <b>Transitions:</b>
+                <div id="explore_select" class="select"></div>
+            </div>
+
+            <b>Trace:</b>
+            <span id="explore_len">0 transitions</span>
+            <input type="checkbox" id="cb_weak_trace" autocomplete="off">
+            <label for="cb_weak_trace">hide internal actions</label>
+            <div id="explore_trace" class="trace"></div>
+        </div>
+    </div>
+</body>
+</html>
