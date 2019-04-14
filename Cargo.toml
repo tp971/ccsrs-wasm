@@ -8,8 +8,8 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-ccsrs = { path = "../ccsrs" }
-#ccsrs = { git = "https://github.com/tp971/ccsrs" }
+#ccsrs = { path = "../ccsrs" }
+ccsrs = { git = "https://github.com/tp971/ccsrs" }
 wasm-bindgen = "0.2"
 
 [profile.release]
