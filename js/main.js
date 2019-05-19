@@ -1,8 +1,11 @@
+var random_steps = 16;
+
 var program = null;
 
 var process = null;
 var process_str = null;
 var transitions = [];
+var trace_len = 0;
 var weak_trace = false;
 var do_random = false;
 
@@ -27,6 +30,8 @@ function explore_init(p) {
             from.free();
     });
     $("#explore_trace").empty();
+    trace_len = 0;
+
     explore_goto(p.get_process());
     explore_update_screen();
 }
@@ -101,11 +106,10 @@ function explore_update_screen() {
             );
     }
 
-    var len = $("#explore_trace").children().length;
-    if(len == 1)
+    if(trace_len == 1)
         $("#explore_len").text("1 transition");
     else
-        $("#explore_len").text(len + " transitions");
+        $("#explore_len").text(trace_len + " transitions");
 }
 
 function explore_select(i) {
@@ -119,6 +123,7 @@ function explore_select(i) {
 
         var entry =
             $("<div>")
+                .data("count", 1)
                 .data("from", process.clone())
                 .append($("<a href='#' class='act'>").text("<-( " + act_str + " )--")
                     .click(function(e) {
@@ -128,9 +133,12 @@ function explore_select(i) {
                             let from = $(this).data("from");
                             if(from !== undefined)
                                 from.free();
+                            trace_len -= $(this).data("count");
                             $(this).remove();
                         });
+                        trace_len -= $(this).parent().data("count");
                         $(this).parent().remove();
+
                         explore_goto(from);
                         explore_update_screen();
                     })
@@ -144,15 +152,21 @@ function explore_select(i) {
             entry.addClass("weak");
         $("#explore_trace").prepend(entry);
     } else {
-        $("#explore_trace").prepend($("<div>"));
+        if($("#explore_trace").children().length == 0)
+            $("#explore_trace").prepend($("<div>").data("count", 1));
+        else {
+            var first = $("#explore_trace").children().first();
+            first.data("count", first.data("count") + 1);
+        }
     }
 
+    trace_len++;
     explore_goto(transitions[i].to);
 }
 
 function explore_random() {
     if(do_random) {
-        for(var i = 0; i < 16; i++) {
+        for(var i = 0; i < random_steps; i++) {
             if(transitions.length == 0)
                 break;
             explore_select(Math.floor(Math.random() * transitions.length));

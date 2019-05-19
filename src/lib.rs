@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 use ccsrs::ccs::{Program, Process, Action, Transition, FoldOptions, Dict, DisplayCompressed};
 use ccsrs::parser::Parser;
+use std::fmt::Write;
+use std::io::Read;
 use std::sync::Arc;
 
 #[wasm_bindgen]
@@ -69,6 +71,16 @@ impl JSCCSProcess {
     pub fn to_string(&self, program: &JSCCSProgram) -> String {
         format!("{}", DisplayCompressed(self.0.as_ref(), &program.dict))
     }
+
+    #[wasm_bindgen]
+    pub fn to_string_with_ctx(&self, program: &JSCCSProgram) -> String {
+        let mut res = String::new();
+        for (_, next) in program.program.bindings() {
+            write!(res, "{}\n", DisplayCompressed(next, &program.dict)).unwrap();
+        }
+        write!(res, "{}", DisplayCompressed(self.0.as_ref(), &program.dict)).unwrap();
+        res
+    }
 }
 
 #[wasm_bindgen]
@@ -115,7 +127,7 @@ impl JSCCSTransitions {
 
 #[wasm_bindgen]
 pub fn parse_program(s: &str) -> Result<JSCCSProgram, JsValue> {
-    match Parser::new(s.bytes().map(|b| Ok(b))).parse_program() {
+    match Parser::new(s.as_bytes().bytes()).parse_program() {
         Ok(program) => {
             let mut dict = Dict::new();
             let program = program.compress(&mut dict);
